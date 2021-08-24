@@ -1,0 +1,117 @@
+﻿### HELPERS
+
+##SP				=> [\s\n]*
+##SPP				=> [\s\n]+
+##Generic			=> (?:(?><(?>[^<>]+|<(?<P>)|(?<C-P>)>)*(?(P)(?!))>)+)
+##SimpleIdentifier 	=> #Word(?:\s*#Generic)?
+##Type				=> (?:(?:#Identifier \s* (?:$Between(#LB, #RB)\s*) *? ))
+##Identifier		=> (?:#SimpleIdentifier(?:(?:#SP\.#SP#SimpleIdentifier)*))
+
+##At				=> \@
+##Dollar			=> \$
+##Sharp				=> \#
+
+##Param				=> #Annotation?#SP
+					   (?<parammodifier>(?:final\s+))?
+					   (?<paramtype>#Type(\.\.\.)?#SP)
+					   (?<!\w+)
+					   (?<paramname>#Word  \s* (?:$Between(#LB, #RB)\s*) *?  )
+					   (?:#SP#Equal#SP(?<paramvalue>#Number|#String|#Identifier(?:#SP$Between(#LP, #RP))?))?
+
+##ParamGroup		=> #LP#SP(?:(?<param>#Param)(?:,#SP)?)*#SP#RP
+
+
+#Word				=> (?:[a-zA-Z_\@]\w*)
+
+##Access			=> (?>public|private|protected)
+##Modifier			=> (?>static|final|volatile|default)
+
+#LB					=> \[
+
+#RB					=> \]
+
+#Annotation			=> (?<annotation>@#Word(?:\s*$Between(#LP, #RP))?)
+
+#EnumValue			=> ( ?<![^\s])(?<enumname>#Word) \s* (?:$Between(#LB, #RB)\s*) *? (?:,|;)
+
+#F					=> (?:#Annotation#SP)*
+					   (?<fieldaccess>#Access#SPP)?
+					   (?<fieldmodifier>(?:#Modifier#SPP)*)?  
+					   (?<fieldtype>#Type #SPP) 
+					   (?<!\w+)(?<!(?>return)\s+)
+					   (?<fieldname>#Word  \s* (?:$Between(#LB, #RB)\s*) *?)#SP
+					   (?:\;|\=(?<field_value>$Until(#SemiColon)))
+
+#M					=> (?<![^\s])
+					   (?:#Annotation#SP)*
+					   (?<methodaccess>#Access#SPP)?
+					   (?<methodmodifier>(?:#Modifier#SPP)*)?
+					   (?<methodtype>#Type#SPP)?
+					   (?<!\w+)(?<!(?>new|return)\s+)
+					   (?<methodname>#SimpleIdentifier)#SP
+					   #ParamGroup#SP
+					   (?<methodexeptions>(?:throws.+))?#SP
+					   (?:(?:default#SPP (?<body>$Until(#SemiColon))) | (?<body>;|$Between(#LC, #RC)))
+					     
+#C					=> (?:#Annotation#SP)*
+					   (?<access>#Access#SPP)?
+					   (?<modifier>#Modifier #SPP)?
+					   class#SPP
+					   (?<name>#SimpleIdentifier)#SP
+					   (extends#SPP(?:(?<extends>#Identifier)(?:#SP \,? #SP))*)?
+					   (implements#SPP(?:(?<implements>#Identifier)(?:#SP \,? #SP))*)?
+					   (?=#SP#LC)
+
+#I					=> (?:#Annotation#SP)*
+						(?<access>#Access#SPP)?
+						(?<modifier>#Modifier#SPP)?
+						@?interface #SPP
+						(?<name>#SimpleIdentifier) #SP 
+					   	(extends#SPP(?:(?<extends>(?!implements)#Identifier)(?:#SP\,? #SP))*)?
+					   	(implements#SPP(?:(?<implements>#Identifier)(?:#SP \,? #SP))*)?
+					    (?=#SP#LC)
+
+#E					=> (?:#Annotation#SP)*
+					   (?<access>#Access #SPP)?
+					   enum #SPP
+					   (?<name>#Word)
+					   (?=#SP#LC)
+
+#P					=> (?:package(?<name>[^;]*);)
+
+#Import				=> (?:import[^;]*;)
+
+#GT					=> \>
+#LT					=> \<
+#Equal				=> \=
+#Plus				=> \+
+#Minus				=> -
+#QM					=> \?
+#Pipe				=> \|
+#Negate				=> \!
+#And				=> \&
+#Xor				=> \^
+#Tilde				=> \~
+#Arrow				=> \=\>
+#Div				=> /
+#Mod				=> \%
+#Mul				=> \*
+#LP					=> \(
+#RP					=> \)
+#Dot				=> \.
+#Comma				=> \,
+#Colon				=> \:
+#SemiColon			=> \;
+#LC					=> \{
+#RC					=> \}
+
+
+#Com				=> (?:(?:/\*(?:[^*]|(?:\*+[^*/]))*\*+/)|(?:\s*//[^\n]*))+
+#String				=> (?:(?:[\@\$]*"(?:(?:\\"|"")|(?:\\\\)|\s|[^"])*")|(?:'(?:(?:\\'|'')|(?:\\\\)|\s|[^'])*'))
+#Number				=> (?:(?:0[xb][0-9A-Fa-f]+)|[0-9])+([a-zA-Z]?)
+
+
+### FUNCTIONS
+
+$Between($open, $close) => (?:(?>#open(?>[^#open#close"'/]+|#String|#Com|/|#open(?<P>)|(?<C-P>)#close)*(?(P)(?!))#close)+)
+$Until($arg) => (?:(?:#String|#Com|[^#arg])*?#arg)

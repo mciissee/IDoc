@@ -1,0 +1,162 @@
+﻿<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{15454E81-35AA-4589-A3B8-12F5E41D2F9D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Idoc.Lib</RootNamespace>
+    <AssemblyName>Idoc.Lib</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile></DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Core\Parsing\LexerIterator.cs" />
+    <Compile Include="src\Core\Parsing\Pattern.cs" />
+    <Compile Include="src\Core\Parsing\Token.cs" />
+    <Compile Include="src\Core\Parsing\Lexer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Utils\Extension.cs" />
+    <Compile Include="src\Core\Enums\Language.cs" />
+    <Compile Include="src\Debugging\Log.cs" />
+    <Compile Include="src\Debugging\Logger.cs" />
+    <Compile Include="src\Utils\RegexUtils.cs" />
+    <Compile Include="src\Utils\ResourceLoader.cs" />
+    <Compile Include="src\Core\Setting.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="src\CSharp\CSParser.cs" />
+    <Compile Include="src\Core\Parsing\Position.cs" />
+    <Compile Include="src\Core\Enums\ItemTypes.cs" />
+    <Compile Include="src\Core\DocItem.cs" />
+    <Compile Include="src\Core\IDocItem.cs" />
+    <Compile Include="src\Core\Parsing\IParser.cs" />
+    <Compile Include="src\Core\Parsing\Scope.cs" />
+    <Compile Include="src\Core\CommentItem.cs" />
+    <Compile Include="src\Core\EnumValueItem.cs" />
+    <Compile Include="src\C\CParser.cs" />
+    <Compile Include="src\Java\JParser.cs" />
+    <Compile Include="src\Core\IDoc.cs" />
+    <Compile Include="src\Core\Parsing\PatternFunction.cs" />
+    <Compile Include="src\Core\BaseParser.cs" />
+    <Compile Include="src\C\HeaderItem.cs" />
+    <Compile Include="src\CSharp\NamespaceItem.cs" />
+    <Compile Include="src\CSharp\CSClassItem.cs" />
+    <Compile Include="src\CSharp\CSOperatorItem.cs" />
+    <Compile Include="src\CSharp\CSFieldItem.cs" />
+    <Compile Include="src\C\CTypeItem.cs" />
+    <Compile Include="src\CSharp\CSConstructorItem.cs" />
+    <Compile Include="src\CSharp\CSPropertyItem.cs" />
+    <Compile Include="src\CSharp\CSParam.cs" />
+    <Compile Include="src\CSharp\CSMethodItem.cs" />
+    <Compile Include="src\C\CFieldItem.cs" />
+    <Compile Include="src\C\CMacroItem.cs" />
+    <Compile Include="src\C\CParam.cs" />
+    <Compile Include="src\C\CMethodItem.cs" />
+    <Compile Include="src\Java\PackageItem.cs" />
+    <Compile Include="src\Java\JClassItem.cs" />
+    <Compile Include="src\Java\JMethodItem.cs" />
+    <Compile Include="src\Java\JParam.cs" />
+    <Compile Include="src\Java\JConstructorItem.cs" />
+    <Compile Include="src\Java\JFieldItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="res\grammar-c.txt" />
+    <EmbeddedResource Include="res\grammar-cs.txt" />
+    <EmbeddedResource Include="res\grammar-java.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="src\CSharp\" />
+    <Folder Include="src\C\" />
+    <Folder Include="src\Java\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileFormatDefault" />
+          <TextStylePolicy TabWidth="4" TabsToSpaces="False" IndentWidth="4" RemoveTrailingWhitespace="True" NoTabsAfterNonTabs="False" EolMarker="Native" FileWidth="80" scope="text/plain" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

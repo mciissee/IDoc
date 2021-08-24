@@ -1,0 +1,111 @@
+﻿### HELPERS
+
+##SP			=> [\s\n]*
+
+##SPP			=> [\s\n]+
+
+##Type				=> (?:(?:struct\s+)?#Identifier(?:#SP\*)*)
+
+##FunctionPointer   => (?:
+							(?<functionreturn>#Type)#SP 
+							#LP#SP\*#SP(?<pointername>#Identifier)#RP#SP
+							(?<functionarguments>$Between(#LP, #RP))
+					   )
+
+##Param				=> (?:
+							(?<paramname>\.\.\.)
+					   |
+					   		#FunctionPointer
+					   |
+						   (?<parammodifier>const#SPP)?
+						   (?<paramtype>#Type#SPP)
+						   (?<parammodifier>(?:const#SPP))?
+						   (?<!\w+)
+						   (?<paramname>#Identifier)(?:$Between(#LB, #RB)\s*)*
+					   )
+
+
+##ParamGroup		=> #LP#SP(?:(?<param>#Param)(?:,#SP)?)*#SP#RP
+
+##Access			=> (?>auto|extern|register|static)
+
+##Modifier			=> (?>volalile|const)
+
+#Identifier			=> (?:[a-zA-Z_]\w*)
+
+#LB					=> \[
+
+#RB					=> \]
+
+#EnumValue			=> (?<enumname>\w+)\s*(=\s*(?<enumvalue>[^,|\}|\n]*))?(?>,|\s*(?=\}))(?=/)?
+
+#F					=> (?:
+							#FunctionPointer
+					   |
+						   (?<fieldaccess>#Access#SPP)?
+						   (?<fieldmodifier>#Modifier#SPP)?
+						   (?<fieldtype>#Type#SP) 
+						   (?<!\w+)(?<!return\s*)
+						   (?<fieldname>#Identifier#SP(?:$Between(#LB, #RB)\s*)*)
+						   #SP(?:\;|\=(?<fieldvalue>$Until(#SemiColon)))
+					   )
+#M					=> 
+					   (?<methodaccess>#Access#SPP)?
+					   (?<methodmodifier>(?:#Modifier#SPP)*)?
+					   (?<methodtype>(?:#Type|#FunctionPointer)#SPP)
+					   (?<!\w+)(?<!(?>return)\s+)
+					   (?<methodname>#Identifier)#SP
+					   #ParamGroup
+					   #SP(?<body>#SemiColon|$Between(#LC, #RC))
+
+#Typedef			=> typedef $Until(#SemiColon)
+
+#S					=> typedef #SPP struct #SP (?<name>#Identifier)? (?=#SP #LC)
+
+#U					=> typedef #SPP union #SP (?<name>#Identifier)? (?=#SP #LC)
+
+#E					=> typedef #SPP enum #SP (?<name>#Identifier)? (?=#SP #LC)
+
+#Prepo				=> \#[^\n]+
+
+#Define				=> \#define[^\n]*
+#Includes			=> (?:\#include[^\n]*[\s\n]*)+
+#Macro				=> \#define\s+(?<name>\w+)(?<value>(.)*)
+
+#GT					=> \>
+#LT					=> \<
+#Equal				=> \=
+#Plus				=> \+
+#Minus				=> -
+#QM					=> \?
+#Pipe				=> \|
+#Negate				=> \!
+#And				=> \&
+#Xor				=> \^
+#Tilde				=> \~
+#Arrow				=> \=\>
+#Div				=> /
+#Mod				=> \%
+#Mul				=> \*
+#LP					=> \(
+#RP					=> \)
+#Dot				=> \.
+#Comma				=> \,
+#Colon				=> \:
+#SemiColon			=> \;
+#LC					=> \{
+#RC					=> \}
+
+#Com				=> (?:(?:/\*(?:[^*]|(?:\*+[^*/]))*\*+/)|(?:\s*//[^\n]*))+
+#String				=> (?:(?:[\@\$]*"(?:(?:\\"|"")|(?:\\\\)|\s|[^"])*")|(?:'(?:(?:\\'|'')|(?:\\\\)|\s|[^'])*'))
+
+###(?:(?:[\@\$]*"(?:(?:\\")|(?:\\\\)|\s|[^"])*")|(?:'(?:(?:\\'[^'])|\s|[^']{1,2})'))
+
+#Number				=> (?:(?:0[xb][0-9A-Fa-f]+)|[0-9])+([a-zA-Z]?)
+
+### FUNCTIONS
+
+
+$Between($open, $close) => (?:(?>#open(?>[^#open#close"'/#]+|#String|#Com|#Prepo|/|#open(?<P>)|(?<C-P>)#close)*(?(P)(?!))#close)+)
+
+$Until($arg) => (?:(?:#String|#Com|#Prepo|[^#arg])*?#arg)

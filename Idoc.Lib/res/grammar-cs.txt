@@ -1,0 +1,161 @@
+﻿### HELPERS
+
+##Spaces			=> [\s\n]*
+##SPACES			=> [\s\n]+
+
+##Generic			=> (?:(?><(?>[^<>]+|<(?<P>)|(?<C-P>)>)*(?(P)(?!))>)+)
+##SimpleIdentifier 	=> ~?#Word(?:\s*#Generic)?
+##Type				=> (?:(?:#Identifier(?:#Spaces\*)*|$Between(#LP, #RP)\??)(?:#Spaces#LB(?:#Spaces|,)#RB)*?)
+##Identifier		=> (?:#SimpleIdentifier(?:(?:#Spaces\??\.#Spaces#SimpleIdentifier\??)*|\?))
+##At				=> \@
+##Dollar			=> \$
+##Sharp				=> \#
+##Get				=> (?:get|private\s+get|protected\s+get|internal\s+get)
+##Set				=> (?:set|private\s+set|protected\s+set|internal\s+set)
+
+##Param				=> (?<paramname>__arglist)
+					   |
+					   (?:
+						   (?<paramattribute>#Attribute#Spaces)*
+						   (?<parammodifier>(?:this\s+|ref\s+|out\s+|in\s+|params\s+))?
+						   (?<paramtype>#Type#Spaces)
+						   (?<!\w+)
+						   (?<paramname>#Word)
+						   (?:#Spaces#Equal#Spaces(?<paramvalue>#Number|#String|#Identifier(?:#Spaces$Between(#LP, #RP))?))?
+					   )
+
+##Params			=> #LP#Spaces(?:(?<param>#Param)(?:,#Spaces)?)*#Spaces#RP
+
+##Word				=> (?:[a-zA-Z_\@]\w*)
+
+##Access			=> (?>public|private|protected|internal|private #SPACES protected|protected #SPACES internal)
+
+##Modifier			=> (?>const|abstract|async|event|delegate|extern|override|static|unsafe|virtual|new|ref|partial|sealed|readonly)
+
+##Operator 			=> operator#Spaces[\w\s<>,\[\].\+\-\*/=&|%\^~\(\)]+
+
+
+
+##LB				=> \[
+##RB				=> \]
+##GT				=> \>
+##LT				=> \<
+##Equal				=> \=
+##Plus				=> \+
+##Minus				=> -
+##QM				=> \?
+##Pipe				=> \|
+##Negate			=> \!
+##And				=> \&
+##Xor				=> \^
+##Tilde				=> \~
+##Arrow				=> \=\>
+##Div				=> /
+##Mod				=> \%
+##Mul				=> \*
+##LP				=> \(
+##RP				=> \)
+##Dot				=> \.
+##Comma				=> \,
+##Colon				=> \:
+
+##Number			=> (?:(?:0[xb][0-9A-Fa-f]+)|[0-9])+([a-zA-Z]?)
+##Condition			=> (?>(?>if|for|foreach|while|switch|using)#Spaces $Between(#LP, #RP)#Spaces $Between(#LC, #RC)?)
+
+
+
+
+
+#EnumValue			=> (?<enumname>\w+)\s*(=\s*(?<enumvalue>[^,|\}|\n]*))?(?>,|\s*(?=\}))(?=/)?
+
+#F					=> 
+					   (?:
+					   	  (?:(?<fieldaccess>#Access #SPACES)?(?<fieldmodifier>(?:#Modifier #SPACES)+)?) 
+					   	  |
+				   	      (?:(?<fieldmodifier>(?:#Modifier #SPACES)+)?(?<fieldaccess>#Access #SPACES)?)
+					   )
+					   (?<fieldtype>#Type #Spaces) 
+					   (?<!\w+)(?<!(?>var|return|goto)\s+)
+					   (?:(?<fieldname>#Identifier)(?:#Spaces,?#Spaces))+
+					   #Spaces
+					   (?:;|=(?<fieldvalue>$Until(#SemiColon)))
+
+#P					=> 
+					   (?:
+					   	  (?:(?<propaccess>#Access #SPACES)?(?<propmodifier>(?:#Modifier #SPACES)+)?) 
+					   	  |
+				   	      (?:(?<propmodifier>(?:#Modifier #SPACES)+)?(?<propaccess>#Access #SPACES)?)
+					   )
+					   (?<proptype>#Type#SPACES) 
+					   (?<!\w+)(?<!(?>namespace|class|enum|struct|interface)\s+)
+					   (?<propname>#Identifier|this\s*\[.+\])
+					   #Spaces(?:#Arrow$Until(#SemiColon)|(?<propbody>$Between(#LC, #RC)))
+  
+#M					=> (?<![^\s])
+					   (?:
+					   	  (?:(?<methodaccess>#Access #SPACES)?(?<methodmodifier>(?:#Modifier #SPACES)+)?) 
+					   	  |
+				   	      (?:(?<methodmodifier>(?:#Modifier #SPACES)+)?(?<methodaccess>#Access #SPACES)?)
+					   )
+					   (?<methodtype>#Type #SPACES)?
+					   (?<!\w+)
+					   (?<!(?>new|return)\s+)
+					   (?<methodname>#Identifier|#Operator)#Spaces
+					   #Params
+					   (?<methodconstraints>#Spaces(?:where.+|:#Spaces (?:base|this) #Spaces $Between(#LP, #RP)))?
+					   #Spaces(?<body>;|$Between(#LC, #RC)|=>$Until(#SemiColon))
+					     
+#C					=>  
+						(?<access>#Access #SPACES)?
+						(?<modifier>(?:#Modifier #SPACES)+)?
+						class #SPACES 
+						(?<name>#SimpleIdentifier) #Spaces 
+					    (:(?:(?<base>[^,{]+),?)*)?
+					    (?<constraints>where.+)?
+					    (?=#Spaces #LC)
+
+#I					=> 
+						(?<access>#Access #SPACES)?
+						(?<modifier>(?:#Modifier #SPACES)+)?
+						interface #SPACES
+						(?<name>#SimpleIdentifier)#Spaces 
+					   	(:(?:(?<base>[^,{]+),?)*)?
+					    (?<constraints>where.+)? 
+					    (?=#Spaces #LC)
+
+#S					=> 
+						(?<access>#Access #SPACES)?
+						(?<modifier>(?:#Modifier #SPACES)+)?
+						struct #SPACES
+						(?<name>#SimpleIdentifier)#Spaces 
+					    (:(?:(?<base>[^,{]+),?)*)?
+					    (?<constraints>where.+)? 
+					    (?=#Spaces #LC)
+
+#E					=> 
+						(?<access>#Access #SPACES)?
+						enum #SPACES 
+						(?<name>#Word)#Spaces
+						(:(?:(?<base>[^,{]+),?)*)?
+						(?=#Spaces #LC)
+
+#N					=>  namespace #SPACES
+						(?<name>#Word(?:#Spaces\.#Word #Spaces)*)
+						(?:#Spaces\.#Word #Spaces)*
+
+#Attribute			=>  (?<attribute>$Between(#LB, #RB)#Spaces)+
+
+#Using				=> using[^;]+;
+#Prepo				=> #[^\n]+
+
+#Com				=> (?:(?:/\*(?:[^*]|(?:\*+[^*/]))*\*+/)|(?:\s*//[^\n]*))+
+#String				=> (?:[@$]+(?:"(?:""+|[^"])*")|(?:"(?:(?:\\")|[^"])*")|(?:'(?:''+|[^'])*')|(?:'(?:\'|[^'])*'))
+#SemiColon			=> \;
+#LC					=> \{
+#RC					=> \}
+
+
+### FUNCTIONS
+
+$Between($open, $close) => (?:(?>#open(?>[^#open#close"'/#]+|#String|#Com|#Prepo|/|#open(?<P>)|(?<C-P>)#close)*(?(P)(?!))#close)+)
+$Until($condition) 		=> (?:(?:#String|#Com|#Prepo|[^#condition])*?#condition)
