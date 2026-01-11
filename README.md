@@ -1,6 +1,3 @@
-**[EXAMPLE](https://infinity-engine-f6f33.firebaseapp.com/)
-**  
-
 **WHAT IS IT ?**  
 IDoc was created to automate the process of project documentation. It allows you to **create**, **publish** and **maintain** professional quality documentation for **C#**,**Java**  
 The plugin is fully integrated with Unity Editor thanks to an editor window that allow to set up a project and build the documentation.  
